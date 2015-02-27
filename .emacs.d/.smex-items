@@ -1,0 +1,18 @@
+
+;; ----- smex-history -----
+(
+ list-packages
+ menu-bar-mode
+ shell
+ R
+ S
+ S+
+ cd
+)
+
+;; ----- smex-data -----
+(
+ (shell . 1)
+ (list-packages . 2)
+ (menu-bar-mode . 1)
+)
