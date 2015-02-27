@@ -32,8 +32,7 @@
 (global-set-key (kbd "S-C-<down>") 'shrink-window)
 (global-set-key (kbd "S-C-<up>") 'enlarge-window)
 
-;; Require ESS
-(require 'ess-site)
+
 
 ;; Mouse mode in terminal
 ;; (add-hook 'term-setup-hook
@@ -584,3 +583,6 @@
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 ;; (add-to-list 'auto-mode-alist '("\\.Rmd\\'" . markdown-mode))
 
+
+;; Require ESS
+(require 'ess-site)
