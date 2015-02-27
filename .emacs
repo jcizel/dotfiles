@@ -4,6 +4,44 @@
 		;;                                    ;;
 		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(load-theme 'tango)
+
+;; Redefine key signals for terminal mode
+(add-hook 'term-setup-hook
+  '(lambda ()
+     (define-key function-key-map "\e[1;9A" [M-up])
+     (define-key function-key-map "\e[1;9B" [M-down])
+     (define-key function-key-map "\e[1;9C" [M-right])
+     (define-key function-key-map "\e[1;9D" [M-left])
+     (define-key function-key-map "\e[1;5A" [C-up])
+     (define-key function-key-map "\e[1;5B" [C-down])
+     (define-key function-key-map "\e[1;5C" [C-right])
+     (define-key function-key-map "\e[1;5D" [C-left])
+     (define-key function-key-map "\e[1;XX" [C-return])
+     (define-key function-key-map "\e[1;Y1" (kbd "C-="))
+     (define-key function-key-map "\e[1;Y2" (kbd "C--"))
+     (define-key function-key-map "\e[1;l1" (kbd "C-l"))
+     (define-key function-key-map "\e[1;S9" [S-return])
+     (define-key function-key-map "\e[1;R1" [C-M-right])
+     (define-key function-key-map "\e[1;R2" [C-M-left])
+     ))
+
+;; KEYBINDINGS TO CHANGE WINDOW SIZES
+(global-set-key (kbd "S-C-<left>") 'shrink-window-horizontally)
+(global-set-key (kbd "S-C-<right>") 'enlarge-window-horizontally)
+(global-set-key (kbd "S-C-<down>") 'shrink-window)
+(global-set-key (kbd "S-C-<up>") 'enlarge-window)
+
+;; Require ESS
+(require 'ess-site)
+
+;; Mouse mode in terminal
+;; (add-hook 'term-setup-hook
+;; 	  '(lambda ()
+;; 	     (require 'mouse)
+;; 	     (xterm-mouse-mode t)
+;; 	     (defun track-mouse (e)) 
+;; 	     (setq mouse-sel-mode 1)))
 
 ;; Disable toolbar mode
 (if (display-graphic-p)
@@ -27,39 +65,15 @@
 ;; Locate files with mdfind
 (setq locate-command "mdfind")
 
-;; Automatically pair brackets and string quotes
-;; (add-to-list 'load-path "/Users/jankocizel/.emacs.d/elpa/autopair-20121123.1829/")
-;; (require 'autopair)
-;; (autopair-global-mode) ;; to enable in all buffers
 
 ;; Tags table list
 (setq tags-table-list
       '("~/Documents/Dropbox"))
 
-;; Evil mode
-;; (add-to-list 'load-path "/Users/jankocizel/.emacs.d/elpa/evil-20131023.2315/")
-;; (require 'evil)
-;; (evil-mode 0)
-
-
-;; Enable speed-bar
-;; (when window-system          ; start speedbar if we're using a window system
-;;   (speedbar t))
-
 (add-to-list 'load-path "/Users/jankocizel/.emacs.d/elpa/move-text-20130506.1826/")
 (require 'move-text)
 (move-text-default-bindings)
 
-;; Enable TERN (for javascript)
-
-;; (add-to-list 'load-path "/opt/local/lib/node_modules/tern/emacs/")
-;; (autoload 'tern-mode "tern.el" nil t)
-;; ;; (add-hook 'js-mode-hook (lambda () (tern-mode t)))
-
-;; (eval-after-load 'tern
-;;   '(progn
-;;      (require 'tern-auto-complete)
-;;      (tern-ac-setup)));
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;;                                                                  ;;
@@ -81,19 +95,13 @@
 ;; Increase font size
 (set-face-attribute 'default nil :height 120)
 
-
 ;; Tell emacs where is your personal elisp lib dir
 ;; this is default dir for extra packages
-(add-to-list 'load-path "~/elisp")
+;; (add-to-list 'load-path "~/elisp")
 (add-to-list 'load-path "~/.emacs.d/")
 
 ;; Improve buffer switching experience
 (iswitchb-mode 1)
-
-;; Load org-reveal (installation directions can be found in
-;; https://github.com/yjwen/org-reveal/blob/master/Readme.org)
-;;(require 'ox-reveal)
-;;(setq org-reveal-root "file:///Users/jankocizel/elisp/reveal.js")
 
 ;; enable ido completion features
 (setq ido-enable-flex-matching t)
@@ -133,78 +141,6 @@
 (global-set-key [C-up] 'windmove-up)              ; move to upper window
 (global-set-key [C-down] 'windmove-down)          ; move to downer window
 
-      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-      ;;                     ORG MODE CUSTOMIZATION                              ;;
-      ;;                                                                         ;;
-      ;;                                                                         ;;
-      ;; Inspired by: http://orgmode.org/worg/org-tutorials/orgtutorial_dto.html ;;
-      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; Set to the location of your Org files on your local system
-(setq org-directory "~/Documents/Dropbox/ORG/")
-;; Set to the name of the file where new notes will be stored
-(setq org-mobile-inbox-for-pull "~/Documents/Dropbox/ORG/flagged.org")
-;; Set to <your Dropbox root directory>/MobileOrg.
-(setq org-mobile-directory "~/Documents/Dropbox/Apps/MobileOrg")
-
-;; Define the file that will capture all random notes at the central location
-(setq org-default-notes-file "/Users/jankocizel/Documents/Dropbox/ORG/NOTES.org")
-(define-key global-map "\C-cc" 'org-capture)
-
-;; Create org-mode capture templates (see http://orgmode.org/manual/Capture-templates.html and
-;; http://stackoverflow.com/questions/11116712/using-properties-in-org-mode-capture-templates)
-(setq org-capture-templates
-      '(("\C-w" "Todo (work)" entry (file+headline "~/Documents/Dropbox/ORG/work.org" "Tasks")
-	 "* TODO %?\n  %i\n  %a")
-	("\C-p" "Todo (personal)" entry (file+headline "~/Documents/Dropbox/ORG/personal.org" "Tasks")
-	 "* TODO %?\n  %i\n  %a")
-	("\C-t" "Tips and Tricks" entry (file "~/Documents/Dropbox/ORG/tipsNtricks.org")
-	 "* %?\n  %i\n  %a")
-        ("j" "Journal" entry (file+datetree "~/Documents/Dropbox/ORG/journal.org")
-	 "* %?\nEntered on %U\n  %i\n  %a")
-	("w" "Writing log" table-line (file  "~/Documents/Dropbox/ORG/workrecord.org")
-	 "|%U|%A||%?|" :prepend t :kill-buffer t)))
-
-;; The following lines are always needed. Choose your own keys.
-(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode)) ; not needed since Emacs 22.2
-(add-hook 'org-mode-hook 'turn-on-font-lock) ; not needed when global-font-lock-mode is on
-(global-set-key "\C-cl" 'org-store-link)
-(global-set-key "\C-ca" 'org-agenda)
-(global-set-key "\C-cb" 'org-iswitchb)
-
-;; Org-babel (allows evaluation of R code)
-
-
-;; Disable asking for confirmation when evaluating code blocks
-(setq org-confirm-babel-evaluate nil)
-
-;; Define skeleton
-					; See http://orgmode.org/worg/org-contrib/babel/examples/foo.org.html for the additional details
-(define-skeleton org-skeleton
-  "Header info for a emacs-org file."
-  "Title: \n"
-  "#+DATE:" str " \n"
-  "#+TITLE:" str " \n"
-  "#+AUTHOR: Janko Cizel\n"
-  "#+email: j.cizel@vu.nl\n"
-  "#+OPTIONS: texht:t\n"
-  "#+LATEX_CLASS: article\n"
-  "#+INFOJS_OPT: \n"
-  "#+BABEL: :session *R* :cache yes :results output graphics :exports both :tangle yes \n"
-  "-----"
-  )
-(global-set-key [C-S-f4] 'org-skeleton)
-
-
-(setq org-agenda-files (list "~/Documents/Dropbox/ORG/work.org"
-			     "~/Documents/Dropbox/ORG/personal.org"
-			     "~/Documents/Dropbox/ORG/tipsNtricks.org"
-			     "~/Documents/Dropbox/ORG/journal.org"))
-
-;; Define keywords
-(setq org-todo-keywords
-      '((sequence "TODO(t)" "FEEDBACK(f)" "VERIFY(v)" "|" "DONE(d)")))
-
 
 		 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 		 ;;       TESTS OF NEW PACKAGES        ;;
@@ -219,36 +155,8 @@
 (setq reftex-plug-into-auctex t)
 
 
-
-;;  ess-r-data-view
-;; (require 'ess-r-data-view)
-
-;; expand-region package
-;; (add-to-list 'load-path "/Users/jankocizel/.emacs.d/elpa/expand-region-20130911.319")
-;; (require 'expand-region)
-;; (global-set-key (kbd "C-=") 'er/expand-region)
-;; (global-set-key (kbd "C--") 'er/contract-region)
-
-;; Icicle package (very useful for auto completing commands after M-x)
-;; (add-to-list 'load-path "~/.emacs.d/elpa/icicles-20130929.1722/")
-;; (require 'icicles)
-;; (icy-mode 1)
-
 ;; Icy overrides the IDO find file shortcul. set it right again
 (global-set-key (kbd "C-x f") 'ido-find-file)
-
-;; Projectile (helps with project management)
-;; (add-to-list 'load-path "/Users/jankocizel/.emacs.d/elpa/projectile-20130826.1")
-;; (require 'projectile)
-
-
-;; EXPERIMENTAL: unbind SPACE and ? in minibuffer, to allow typing in completions with those chars
-;; (add-hook 'minibuffer-setup-hook (lambda ()
-;;                                    (define-key minibuffer-local-completion-map " " nil)
-;;                                    (define-key minibuffer-local-must-match-map " " nil)
-;;                                    (define-key minibuffer-local-completion-map "?" nil)
-;;                                    (define-key minibuffer-local-must-match-map "?" nil)))
-
 
 		 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 		 ;;            MY MACROS               ;;
@@ -258,7 +166,7 @@
 (fset 'open
       (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([1 67108896 5 134217847 24 6 25 return] 0 "%d")) arg)))
 
-					; open a highlighted file
+;; open a highlighted file
 (fset 'open-region
       (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([134217847 24 6 25 return] 0 "%d")) arg)))
 
@@ -276,9 +184,6 @@
 (require 'browse-kill-ring)
 (browse-kill-ring-default-keybindings)
 
-;; Imenu
-;;(global-set-key (kbd "M-i") 'ido-goto-symbol)
-
 		 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 		 ;; CUSTOMIZATION OF EMACS FACES PARAMETERS ;;
 		 ;;                                         ;;
@@ -286,13 +191,6 @@
 		 ;; (1) FONTS                               ;;
 		 ;; (2) BACKGROUNGDS                        ;;
 		 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; (custom-set-faces
-;;  ;; custom-set-faces was added by Custom.
-;;  ;; If you edit it by hand, you could mess it up, so be careful.
-;;  ;; Your init file should contain only one such instance.
-;;  ;; If there is more than one, they won't work right.
-;;  '(default ((t (:inherit nil :stipple nil :background "#eeeeec" :foreground "#2e3436" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 180 :width normal :foundry "apple" :family "Monaco")))))
 
 ;; Easily switch between minibuffer and main window
 ;; (see http://superuser.com/questions/132225/how-to-get-back-to-an-active-minibuffer-prompt-in-emacs-without-the-mouse)
@@ -302,24 +200,6 @@
   (when (active-minibuffer-window)
     (select-window (active-minibuffer-window))))
 (global-set-key (kbd "<f7>") 'switch-to-minibuffer-window)
-
-
-;; PYTHON IDE CONFIGURATION (SEE http://caisah.info/emacs-for-python/)
-
-;; (add-hook 'python-mode-hook 'auto-complete-mode)
-;; (add-hook 'python-mode-hook 'jedi:ac-setup)
-;; (add-hook 'after-init-hook #'global-flycheck-mode)
-
-;; (custom-set-variables
-;;  ;; custom-set-variables was added by Custom.
-;;  ;; If you edit it by hand, you could mess it up, so be careful.
-;;  ;; Your init file should contain only one such instance.
-;;  ;; If there is more than one, they won't work right.
-;;  '(TeX-source-correlate-method (quote synctex))
-;;  '(TeX-source-correlate-mode t)
-;;  '(TeX-source-correlate-start-server t)
-;;  '(TeX-view-program-selection (quote (((output-dvi style-pstricks) "dvips and PDF Viewer") (output-dvi "PDF Viewer") (output-pdf "Evince") (output-html "Safari")))))
-
 
 		    ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 		    ;; AUCTeX Configuration  ;;
@@ -360,26 +240,6 @@
 (setq TeX-view-program-list
       '(("Skim" "/Applications/Skim.app/Contents/SharedSupport/displayline %q")))
 
-;; Compile and view Latex document
-;; see: http://stackoverflow.com/questions/14664829/emacs-auctex-prefix-arguments/14717941#14717941
-;; (defun build-view ()
-;;   (interactive)
-;;   (if (buffer-modified-p)
-;;       (progn
-;; 	(let ((TeX-save-query nil))
-;; 	  (TeX-save-document (TeX-master-file)))
-;; 	(setq build-proc (TeX-command "LaTeX" 'TeX-master-file -1))
-;; 	(set-process-sentinel  build-proc  'build-sentinel))
-;;     (TeX-view)))
-
-;; (defun build-sentinel (process event)
-;;   (if (string= event "finished\n")
-;;       (TeX-view)
-;;     (message "Errors! Check with C-`")))
-
-;; (add-hook 'LaTeX-mode-hook '(lambda () (local-set-key (kbd "<f2>") 'build-view)))
-;; Sync between Skim and latex code
-;; (define-key LaTeX-mode-map [M-S-mouse-1] 'TeX-view) ;
 
 ;; Set auto fill to 80 characters
 (add-hook 'LaTeX-mode-hook 'turn-on-auto-fill)
@@ -395,30 +255,12 @@
 (require 'yasnippet)
 (yas-global-mode 0)
 
-;; auto-yasnippet
-;; (add-to-list 'load-path
-;; 	     "/Users/jankocizel/.emacs.d/elpa/auto-yasnippet-20130820.959/")
-;; (require 'auto-yasnippet)
-;; (global-set-key (kbd "<f6>") 'aya-create)
-;; (global-set-key (kbd "<f7>") 'aya-expand)
-
-;;r snippets
-;; (add-to-list 'load-path
-;; 	     "/Users/jankocizel/.emacs.d/elpa/r-autoyas-0.28/")
-;; (require 'r-autoyas)
-;; (add-hook 'ess-mode-hook 'r-autoyas-ess-activate)
-
-;; (add-to-list 'load-path "/Users/jankocizel/.emacs.d/elpa/yasnippet-bundle-0.6.1/")
-;; (require 'yasnippet-bundle)
-
 		 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 		 ;;          Rebox2 comments           ;;
 		 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (add-to-list 'load-path "/Users/jankocizel/.emacs.d/elpa/rebox2-20121113.2100/")
 (setq rebox-style-loop '(11 13 15 21 23 25 31 33 35 41 43 45))
 (require 'rebox2)
-
-
 
 ;; setup rebox for emacs-lisp
 (add-hook 'emacs-lisp-mode-hook (lambda ()
@@ -430,11 +272,6 @@
 			   (set (make-local-variable 'rebox-min-fill-column) 80)
 			   (rebox-mode 1)))
 
-;; (add-hook 'TeX-mode-hook (lambda ()
-;; 			   (set (make-local-variable 'rebox-style-loop) '(625 624))
-;; 			   (set (make-local-variable 'rebox-min-fill-column) 80)
-;; 			   (rebox-mode 1)))
-
 
 		 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 		 ;;      DIRED RELATED THINGS          ;;
@@ -444,7 +281,6 @@
 (package-initialize)
 (add-to-list 'load-path "/Users/jankocizel/.emacs.d/elpa dired+-20130927.600/")
 (require 'dired+)
-
 
 
 ;; Hack dired to launch files with 'l' key.  Put this in your ~/.emacs file
@@ -530,9 +366,6 @@
  '(default ((t (:inherit nil :stipple nil :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 180 :width normal :foundry "apple" :family "Monaco")))))
 
 
-;; Theme
-;; (load-theme 'tango t)
-
 ;; Set easy key for eval buffer
 (global-set-key (kbd "C-<f5>") 'eval-buffer)
 
@@ -563,8 +396,11 @@
 
 
 ;; Make ioccur keybinding
-(define-key isearch-mode-map (kbd "C-o") 'isearch-occur)
+;; Enable isearch+ package
+(add-to-list 'load-path "~/.emacs.d/elpa/isearch+-20130930.1644")
+(eval-after-load "isearch" '(require 'isearch+));; Enable isearch+ package
 
+(define-key isearch-mode-map (kbd "C-o") 'isearch-occur)
 
 ;; Set interface to ack
 (add-to-list 'load-path "/Users/jankocizel/.emacs.d/elpa/ack-and-a-half-20130815.1917")
@@ -575,72 +411,19 @@
 (defalias 'ack-find-file-same 'ack-and-a-half-find-file-same)
 
 
-      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-      ;;      Enable matlab-mode            ;;
-      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		   ;;      Enable matlab-mode            ;;
+		   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (add-to-list 'load-path "~/.emacs.d/matlab-emacs")
 (load-library "matlab-load")
 
-   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-   ;;;;  Set IPython interpreter as default ;;;;
-   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (setq
-;;  python-shell-interpreter "ipython"
-;;  python-shell-interpreter-args ""
-;;  python-shell-prompt-regexp "In \\[[0-9]+\\]: "
-;;  python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
-;;  python-shell-completion-setup-code
-;;  "from IPython.core.completerlib import module_completion"
-;;  python-shell-completion-string-code
-;;  "';'.join(__IP.complete('''%s'''))\n"
-;;  python-shell-completion-module-string-code "")
-
-;; ; pymacs
-;; (add-to-list 'load-path "~/.emacs.d/elpa/pymacs-0.25")
-;; (autoload 'pymacs-apply "pymacs")
-;; (autoload 'pymacs-call "pymacs")
-;; (autoload 'pymacs-eval "pymacs" nil t)
-;; (autoload 'pymacs-exec "pymacs" nil t)
-;; (autoload 'pymacs-load "pymacs" nil t)
-;; (autoload 'pymacs-autoload "pymacs")
-
-;; ; ropemacs
-;; (add-to-list 'load-path "~/.emacs.d/ropemacs-0.7")
-;; (add-to-list 'load-path "~/.emacs.d/pymacs")
-;; (require 'pymacs)
-;; (pymacs-load "ropemacs" "rope-")
-
-
-
-;; Enable isearch+ package
-(add-to-list 'load-path "~/.emacs.d/elpa/isearch+-20130930.1644")
-(eval-after-load "isearch" '(require 'isearch+))
-
 (put 'upcase-region 'disabled nil)
 
-;; (custom-set-variables
-;;  ;; custom-set-variables was added by Custom.
-;;  ;; If you edit it by hand, you could mess it up, so be careful.
-;;  ;; Your init file should contain only one such instance.
-;;  ;; If there is more than one, they won't work right.
-;;  '(LaTeX-command "xelatex"))
 
-;; node.js configuration
-;; (add-to-list 'load-path "/Users/jankocizel/.emacs.d/elpa/nodejs-repl-20130521.42/")
-;; (add-to-list 'load-path "/Users/jankocizel/.emacs.d/elpa/js-comint-20080530.957/")
-;; (require 'js-comint)
-;; (setq inferior-js-program-command "node --interactive")
-;; (setq inferior-js-mode-hook
-;;       (lambda ()
-;;      ;; We like nice colors
-;;         (ansi-color-for-comint-mode-on)
-;;      ;; Deal with some prompt nonsense
-;;         (add-to-list 'comint-preoutput-filter-functions
-;;                      (lambda (output)
-;;                        (replace-regexp-in-string ".*1G\.\.\..*5G" "..."
-;;                                               (replace-regexp-in-string ".*1G.*3G" "&gt;" output))))))
-
+		   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		   ;; JAVASCRIPT IDE SETUP               ;;
+		   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (load "js-config.el")
 (require 'sws-mode)
 (require 'jade-mode)    
@@ -697,53 +480,8 @@
 (add-to-list 'load-path "/Users/jankocizel/.emacs.d/elpa/sunrise-commander-6.448/")
 (require 'sunrise-commander)
 
-;; Theme
-;; (load-theme 'tango-dark t)
-;; (load-theme 'manoj-dark)
-(load-theme 'tango)
-
-;; (if (not window-system);; Only use in tty-sessions.
-;;      (progn
-;;       (defvar arrow-keys-map (make-sparse-keymap) "Keymap for arrow keys")
-;;       (define-key esc-map "[" arrow-keys-map)
-;;       (define-key arrow-keys-map "A" 'previous-line)
-;;       (define-key arrow-keys-map "B" 'next-line)
-;;       (define-key arrow-keys-map "C" 'forward-char)
-;;       (define-key arrow-keys-map "D" 'backward-char)))"]")))
 
 
-;; Redefine key signals for terminal mode
-(add-hook 'term-setup-hook
-  '(lambda ()
-     (define-key function-key-map "\e[1;9A" [M-up])
-     (define-key function-key-map "\e[1;9B" [M-down])
-     (define-key function-key-map "\e[1;9C" [M-right])
-     (define-key function-key-map "\e[1;9D" [M-left])
-     (define-key function-key-map "\e[1;5A" [C-up])
-     (define-key function-key-map "\e[1;5B" [C-down])
-     (define-key function-key-map "\e[1;5C" [C-right])
-     (define-key function-key-map "\e[1;5D" [C-left])
-     (define-key function-key-map "\e[1;XX" [C-return])
-     (define-key function-key-map "\e[1;Y1" (kbd "C-="))
-     (define-key function-key-map "\e[1;Y2" (kbd "C--"))
-     (define-key function-key-map "\e[1;l1" (kbd "C-l"))
-     (define-key function-key-map "\e[1;S9" [S-return])
-     (define-key function-key-map "\e[1;R1" [C-M-right])
-     (define-key function-key-map "\e[1;R2" [C-M-left])
-     ))
-
-
-;; Mouse mode in terminal
-(add-hook 'term-setup-hook
-	  '(lambda ()
-	     (require 'mouse)
-	     (xterm-mouse-mode t)
-	     (defun track-mouse (e)) 
-	     (setq mouse-sel-mode 1)))
-
-
-;; Require ESS
-(require 'ess-site)
 
 ;; Enable ipython
 ;; (defvar server-buffer-clients)
@@ -821,22 +559,13 @@
                    'my-rtcite-export-handler)
 
 
-;; Enable zotelo.el
+	     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	     ;; Enable zotelo.el                   ;;
+	     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (add-to-list 'load-path "/Users/jankocizel/.emacs.d/elpa/zotelo-20130428.2053/")
 (require 'zotelo)
 (add-hook 'TeX-mode-hook 'zotelo-minor-mode)
 (add-hook 'org-mode-hook 'zotelo-minor-mode)
-
-;; (define-key org-mode-map (kbd "C-c (") 'org-mode-reftex-search))
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(org-agenda-files (quote ("~/Documents/Dropbox/Projects/EU_bank_exits/Literature/reviews.org" "~/Documents/Dropbox/ORG/work.org" "~/Documents/Dropbox/ORG/personal.org" "~/Documents/Dropbox/ORG/tipsNtricks.org" "~/Documents/Dropbox/ORG/journal.org")))
- '(org-export-backends (quote (ascii html icalendar latex md)))
- '(safe-local-variable-values (quote ((zotero-collection . #("0" 0 1 (name "*ALL*")))))))
 
 
 ;; Enable jade-mode
@@ -847,32 +576,6 @@
 ;; (require 'sws-mode)
 
 
-;; ENABLE EMACS FOR PYTHON
-(load-file "~/.emacs.d/emacs-for-python/epy-init.el")
-(add-to-list 'load-path "~/.emacs.d/emacs-for-python/") ;; tell where to load
-;; ;; the various files
-;; (require 'epy-setup)      ;; It will setup other loads, it is required!
-;; (require 'epy-python)     ;; If you want the python facilities [optional]
-;; (require 'epy-completion) ;; If you want the autocompletion settings [optional]
-;; (require 'epy-editing)    ;; For configurations related to editing [optional]
-;; (require 'epy-bindings)   ;; For my suggested keybindings [optional]
-;; (require 'epy-nose)       ;; For nose integration
-
-
-;; HIGHLIGHT INDENTATION
-;; (add-to-list 'load-path "/Users/jankocizel/.emacs.d/elpa/indent-guide-20140913.435/")
-;; (require 'indent-guide)
-;; (indent-guide-global-mode)
-;; (setq indent-guide-recursive t)
-
-
-;; KEYBINDINGS TO CHANGE WINDOW SIZES
-(global-set-key (kbd "S-C-<left>") 'shrink-window-horizontally)
-(global-set-key (kbd "S-C-<right>") 'enlarge-window-horizontally)
-(global-set-key (kbd "S-C-<down>") 'shrink-window)
-(global-set-key (kbd "S-C-<up>") 'enlarge-window)
-
-
 
 (autoload 'markdown-mode "markdown-mode"
   "Major mode for editing Markdown files" t)
@@ -881,5 +584,3 @@
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 ;; (add-to-list 'auto-mode-alist '("\\.Rmd\\'" . markdown-mode))
 
-(require 'poly-R)
-(require 'poly-markdown)
