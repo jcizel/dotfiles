@@ -63,16 +63,16 @@
 (move-text-default-bindings)
 
 
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;                                                                  ;;
-;;               Install Other elisp packages                       ;;
-;; (See http://edward.oconnor.cx/2005/09/installing-elisp-files for ;;
-;; further directions)                                              ;;
-;;                                                                  ;;
-;; ALSO SEE:                                                        ;;
-;; http://ergoemacs.org/emacs/emacs_installing_packages.html        ;;
-;;                                                                  ;;
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                                                             ;;
+;;               Install Other elisp packages (See             ;;
+;; http://edward.oconnor.cx/2005/09/installing-elisp-files for ;;
+;; further directions)                                         ;;
+;;                                                             ;;
+;; ALSO SEE:                                                   ;;
+;; http://ergoemacs.org/emacs/emacs_installing_packages.html   ;;
+;;                                                             ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Set the package repositories that should be looked for when using MELPA
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
@@ -97,9 +97,9 @@
 (ido-mode 1)
 
 
-		     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;     Auto-complete.el       ;;
-		     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;     Auto-complete.el               ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; This is what is required to make the installation of auto-complete package to be finalised.
 ;; (add-to-list 'load-path "/Users/jankocizel/.emacs.d/elpa/auto-complete-20130724.1750/")
@@ -129,9 +129,9 @@
 (global-set-key [C-down] 'windmove-down)          ; move to downer window
 
 
-		 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       TESTS OF NEW PACKAGES        ;;
-		 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; AUCTEX
 (add-to-list 'load-path "/Applications/Emacs.app/Contents/Resources/site-lisp")
@@ -160,9 +160,9 @@
 ;; (setq TeX-PDF-mode t)
 ;; (TeX-global-PDF-mode t)
 
-		 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;            MY MACROS               ;;
-		 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; open a file at point after running the mdfind command
 (fset 'open
@@ -189,13 +189,11 @@
 (browse-kill-ring-default-keybindings)
 
 
-		 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; CUSTOMIZATION OF EMACS FACES PARAMETERS ;;
-;;                                         ;;
-;; INCLUDES CUSTOMIZATION OF:              ;;
-;; (1) FONTS                               ;;
-;; (2) BACKGROUNGDS                        ;;
-		 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; CUSTOMIZATION OF EMACS FACES PARAMETERS               ;;
+;;                                                       ;;
+;; INCLUDES CUSTOMIZATION OF: (1) FONTS (2) BACKGROUNGDS ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Easily switch between minibuffer and main window
 ;; (see http://superuser.com/questions/132225/how-to-get-back-to-an-active-minibuffer-prompt-in-emacs-without-the-mouse)
@@ -206,11 +204,11 @@
     (select-window (active-minibuffer-window))))
 (global-set-key (kbd "<f7>") 'switch-to-minibuffer-window)
 
-		    ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; AUCTeX Configuration  ;;
-;;                       ;;
-;; Notes:                ;;
-		    ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; AUCTeX Configuration               ;;
+;;                                    ;;
+;; Notes:                             ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; See: http://stackoverflow.com/questions/16004805/create-a-key-binding-for-latex-jump-to-pdf-synctex
 (setq TeX-auto-save t)
@@ -252,17 +250,17 @@
 ;; (add-hook 'text-mode-hook 'turn-on-auto-fill)
 ;; (setq-default fill-column 80)
 
-		  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;            YASNIPPETS              ;;
-		  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (add-to-list 'load-path
 	     "/Users/jankocizel/.emacs.d/elpa/yasnippet-20130907.1855/")
 (require 'yasnippet)
 (yas-global-mode 0)
 
-		 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;          Rebox2 comments           ;;
-		 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (add-to-list 'load-path "/Users/jankocizel/.emacs.d/elpa/rebox2-20121113.2100/")
 (setq rebox-style-loop '(11 13 15 21 23 25 31 33 35 41 43 45))
 (require 'rebox2)
@@ -326,9 +324,9 @@
    "\""))
 
 
-		     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;     PYTHON AUTOCONFIGURATION       ;;
-		     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; (add-to-list 'load-path "/Users/jankocizel/.emacs.d/elpa/pymacs-0.25/")
 ;; (autoload 'python-mode "python-mode" "Python Mode." t)
@@ -416,9 +414,9 @@
 (defalias 'ack-find-file-same 'ack-and-a-half-find-file-same)
 
 
-		   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;      Enable matlab-mode            ;;
-		   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (add-to-list 'load-path "~/.emacs.d/matlab-emacs")
 (load-library "matlab-load")
@@ -426,9 +424,9 @@
 (put 'upcase-region 'disabled nil)
 
 
-		   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; JAVASCRIPT IDE SETUP               ;;
-		   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (load "js-config.el")
 (require 'sws-mode)
 (require 'jade-mode)    
