@@ -1,6 +1,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                    ;;
-;;      Set-up the environment        ;; 
+;;      Set-up the environment        ;;
 ;;                                    ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -278,10 +278,9 @@
 			   (rebox-mode 1)))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;      DIRED RELATED THINGS          ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq dired-dwim-target t)
+		 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Dired+
 (package-initialize)
@@ -676,7 +675,7 @@
  '(bmkp-last-as-first-bookmark-file "/Users/jankocizel/.emacs.d/bookmarks")
  '(custom-safe-themes
    (quote
-    ("a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "1b1e54d9e0b607010937d697556cd5ea66ec9c01e555bb7acea776471da59055" default))))
+    ("1b1e54d9e0b607010937d697556cd5ea66ec9c01e555bb7acea776471da59055" default))))
 
 (require 'smex) ; Not needed if you use package.el
 (smex-initialize) ; Can be omitted. This might cause a (minimal) delay
@@ -828,180 +827,4 @@
 
 (require 'openwith)
 (openwith-mode t)
-(setq openwith-associations
-      '(("\\.pdf$" "open" (file))
-	("\\.vob\\|\\.VOB\\|\\.wmv\\|\\.mov\\|\\.RM$\\|\\.RMVB$\\|\\.avi$\\|\\.AVI$\\|\\.flv$\\|\\.mp4\\|\\.mkv$\\|\\.rmvb$" "open" (file) )
-	("\\.wav" "open" (file) )
-	("\\.jpe?g$\\|\\.png$\\|\\.bmp\\|\\.gif$" "open" (file))
-	("\\.docx?$" "open" (file))
-	("\\.xlsx$" "open"  (file))
-	))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; DIRED HACKS                        ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (("default"
-;;   ("PDF"
-;;    (extension . "pdf")) ;; what do we do about this
-;;   ("LaTeX"
-;;    (extension "tex" "bib"))
-;;   ("Archives"
-;;    (extension "zip" "rar" "gz" "bz2" "tar")))) ;; This is a test
-
-;; (require 'dired-quick-sort)
-;; (dired-quick-sort-setup)
-
-;; HELM Locate
-(setq helm-locate-fuzzy-match nil)
-
-(setq helm-locate-command
-      (case system-type
-	('gnu/linux "locate -i -r %s")
-	('berkeley-unix "locate -i %s")
-	('windows-nt "es %s")
-	('darwin "mdfind -name %s %s")
-	(t "locate %s")))
- 
-
-(require 'wgrep)
-
-;; (require 'ace-jump-mode)
-;; (define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
-
-(require 'avy)
-(global-set-key (kbd "C-c j") 'avy-goto-word-or-subword-1)
-(global-set-key (kbd "C-c SPC") 'avy-goto-char) ;; go to char
-(global-set-key (kbd "C-c l") 'avy-goto-line) ;; go to any line
-
-;; (require 'ace-jump-helm-line)
-;; (eval-after-cload "helm"
-;;   '(define-key helm-map (kbd "C-l") 'ace-jump-helm-line))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; MAKING STATA WORK                  ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(setq inferior-STA-program-name
-      "/Applications/Stata/StataMP.app/Contents/MacOS/stata-mp")
-
-;; ;; Ado mode (see http://louabill.org/Stata/ado-mode_install.html)
-;; (add-to-list 'load-path "~/.emacs.d/ado-mode/lisp")
-;; (require 'ado-hacks)
-;; (require 'ado-mode)
-
-
-(defun delimit-do (start end toggle &optional clear message)
-  "Send the current region to the inferior ESS process, Stata do-editor style.
-Creates a temporary file, \"do\"-es it, deletes it.
-With prefix argument toggle the meaning of `ess-eval-visibly-p';
-this does not apply when using the S-plus GUI, see `ess-eval-region-ddeclient'."
-  (interactive "r\nP")
-  ;;(untabify (point-min) (point-max))
-  ;;(untabify start end); do we really need to save-excursion?
-  (ess-force-buffer-current "Process to use: ")
-  (message "Starting evaluation...")
-  (setq message (or message "Eval region"))
-
-  (save-excursion
-    ;; don't send new lines (avoid screwing the debugger)
-    (goto-char start)
-    (skip-chars-forward "\n\t ")
-    (setq start (point))
-
-    (unless mark-active
-      (ess-blink-region start end))
-
-    ;; don't send new lines at the end (avoid screwing the
-    ;; debugger)
-    (goto-char end)
-    (skip-chars-backward "\n\t ")
-    (setq end (point)))
-
-  (let* (delimit
-	 (commands (buffer-substring-no-properties start end))
-	 (delimit-do-file (make-temp-file "delimit-do" nil ".do"))
-	 (proc (get-process ess-local-process-name))
-	 (visibly (if toggle (not ess-eval-visibly-p) ess-eval-visibly-p))
-	 (dev-p (process-get proc 'developer))
-	 (tb-p  (process-get proc 'tracebug)))
-    ;; Go to the start of the section and look back for #delimit
-    ;; if found set delimit unless the delimiter is not ";"
-    (save-excursion
-      (goto-char start)
-      (setq delimit (re-search-backward "^#delimit +\\(.+\\)$" nil t))
-      (if delimit
-	  (if (not (string-match ";" (match-string 1))) (setq delimit nil))))
-
-    (with-temp-buffer
-      (if clear (insert "clear\n"))
-      (if delimit (insert "#delimit ;\n"
-			  commands
-			  "\n#delimit cr\n")
-	(insert commands "\n"))
-      (write-file delimit-do-file nil)
-      (kill-buffer (current-buffer)))
-
-    (process-send-string
-     (ess-get-process ess-current-process-name)
-     (format "do %s\nrm %s\n" delimit-do-file delimit-do-file))
-    )
-  (if (and (fboundp 'deactivate-mark) ess-eval-deactivate-mark)
-      (deactivate-mark))
-  ;; return value
-  (list start end))
-
-
-
-(define-key ess-mode-map (kbd "C-c C-s") 'delimit-do)
-
-(eval-after-load 'ess-mode
-  '(defun ess-continued-statement-p ()
-     "this is modified code"
-     (let ((eol (point)))
-       (save-excursion
-	 (cond ((memq (preceding-char) '(nil ?\, ?\; ?\} ?\{ ?\]))
-		nil)
-	       ;; ((bolp))
-	       ((= (preceding-char) ?\))
-		(forward-sexp -2)
-		(looking-at "if\\b[ \t]*(\\|function\\b[ \t]*(\\|for\\b[ \t]*(\\|while\\b[ \t]*("))
-	       ((progn (forward-sexp -1)
-		       (and (looking-at "else\\b\\|repeat\\b")
-			    (not (looking-at "else\\s_\\|repeat\\s_"))))
-		(skip-chars-backward " \t")
-		(or (bolp)
-		    (= (preceding-char) ?\;)))
-	       (t
-		(progn (goto-char eol)
-		       (skip-chars-backward " \t")
-		       (or (and (> (current-column) 1)
-				(save-excursion (backward-char 1)
-
-							;;;; Modified
-							;;;; code
-							;;;; starts
-							;;;; here:
-							;;;; ;;;;
-						(or (looking-at "[-:+*><=]")
-						    (and (looking-at "/")
-							 (save-excursion (backward-char 1)
-									 (not (looking-at "*")))))))
-				   ;;;; End of modified code ;;;;
-
-			   (and (> (current-column) 3)
-				(progn (backward-char 3)
-				       (looking-at "%[^ \t]%")))))))))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; SMART MODE LINE                    ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(sml/setup)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; DRAG STUFF                         ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (require 'drag-stuff)
-;; (drag-stuff-global-mode t)
-
+(setq openwith-associations '(("\\.pdf\\'" "evince" (file))))

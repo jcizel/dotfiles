@@ -87,3 +87,13 @@ export PKG_CPPFLAGS="-I/usr/local/mysql/include"
 export PKG_LIBS="-L/usr/local/mysql/lib/ -lmysqlclient"
 
 export DYLD_LIBRARY_PATH=/usr/local/mysql/lib:$DYLD_LIBRARY_PATH
+
+
+# Necessary to find latex programs
+export PATH=$PATH:/Library/TeX/Distributions/.DefaultTeX/Contents/Programs/texbin
+
+# Find stata
+export PATH=$PATH:/Applications/Stata/StataMP.app/Contents/MacOS
+
+# Solve problems with loading fortran
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/Cellar/gcc/5.3.0/lib/gcc/5/
